@@ -9,190 +9,52 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        body {
-            font-family: 'Prompt', sans-serif;
-            background-color: #f4f7fe;
-            color: #2b3674;
-            margin: 0;
-            padding: 20px;
-        }
-        .container-fluid {
-            max-width: 95%;
-        }
-        .header-title {
-            font-weight: 700;
-            color: #2b3674;
-            font-size: 28px;
-            letter-spacing: -0.5px;
-        }
-        .btn-primary-gradient {
-            background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%);
-            border: none;
-            color: white;
-            border-radius: 12px;
-            padding: 10px 24px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(67, 24, 255, 0.2);
-        }
-        .btn-primary-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(67, 24, 255, 0.3);
-            color: white;
-        }
-        .card-custom {
-            background: #ffffff;
-            border-radius: 20px;
-            border: none;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-            padding: 24px;
-            margin-top: 20px;
-        }
-        .search-container {
-            position: relative;
-            width: 100%;
-            max-width: 350px;
-        }
-        .search-container svg {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #a3bed1;
-        }
-        .form-control-search {
-            background: #f4f7fe;
-            border: none;
-            border-radius: 30px;
-            padding: 10px 20px 10px 45px;
-            font-size: 14px;
-            width: 100%;
-            transition: all 0.3s ease;
-        }
-        .form-control-search:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1);
-            background: #ffffff;
-        }
-        .table {
-            margin-top: 10px;
-        }
-        .table thead th {
-            border-bottom: 1px solid #e9edf7;
-            color: #a3aed1;
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 16px;
-            cursor: pointer;
-            transition: color 0.2s;
-            white-space: nowrap;
-        }
-        .table thead th:hover {
-            color: #4318FF;
-        }
-        .table tbody td {
-            border-bottom: 1px solid #f4f7fe;
-            padding: 16px;
-            vertical-align: middle;
-            font-size: 14px;
-            color: #2b3674;
-            font-weight: 500;
-        }
-        .table-hover tbody tr {
-            transition: all 0.2s ease;
-        }
-        .table-hover tbody tr:hover {
-            background-color: #f8f9fc;
-            transform: scale(1.002);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-            border-radius: 12px;
-        }
-        .amount-text {
-            color: #05cd99;
-            font-weight: 700;
-        }
-        .timestamp-text {
-            color: #8f9bba;
-            font-size: 13px;
-            font-weight: 400;
-        }
-        .action-btn {
-            border-radius: 8px;
-            padding: 6px 12px;
-            font-size: 13px;
-            font-weight: 600;
-            border: none;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
+        body { font-family: 'Prompt', sans-serif; background-color: #f4f7fe; color: #2b3674; margin: 0; padding: 20px; }
+        .container-fluid { max-width: 95%; }
+        .header-title { font-weight: 700; color: #2b3674; font-size: 28px; letter-spacing: -0.5px; }
+        .btn-primary-gradient { background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%); border: none; color: white; border-radius: 12px; padding: 10px 24px; font-weight: 500; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(67, 24, 255, 0.2); }
+        .btn-primary-gradient:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(67, 24, 255, 0.3); color: white; }
+        .card-custom { background: #ffffff; border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); padding: 24px; margin-top: 20px; }
+        .search-container { position: relative; width: 100%; max-width: 350px; }
+        .search-container svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #a3bed1; }
+        .form-control-search { background: #f4f7fe; border: none; border-radius: 30px; padding: 10px 20px 10px 45px; font-size: 14px; width: 100%; transition: all 0.3s ease; }
+        .form-control-search:focus { outline: none; box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1); background: #ffffff; }
+        .table { margin-top: 10px; }
+        .table thead th { border-bottom: 1px solid #e9edf7; color: #a3aed1; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 16px; cursor: pointer; transition: color 0.2s; white-space: nowrap; }
+        .table thead th:hover { color: #4318FF; }
+        .table tbody td { border-bottom: 1px solid #f4f7fe; padding: 16px; vertical-align: middle; font-size: 14px; color: #2b3674; font-weight: 500; }
+        .table-hover tbody tr { transition: all 0.2s ease; }
+        .table-hover tbody tr:hover { background-color: #f8f9fc; transform: scale(1.002); box-shadow: 0 4px 10px rgba(0,0,0,0.02); border-radius: 12px; }
+        .amount-text { color: #05cd99; font-weight: 700; }
+        .timestamp-text { color: #8f9bba; font-size: 13px; font-weight: 400; }
+        .action-btn { border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 600; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
         .btn-print { background: #111c43; color: white; }
         .btn-edit { background: #ffce20; color: #111c43; }
         .btn-delete { background: #ee5d50; color: white; }
-        .action-btn:hover {
-            transform: translateY(-2px);
-            opacity: 0.9;
-        }
-        .modal-content {
-            border-radius: 24px;
-            border: none;
-        }
-        .modal-header {
-            background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%);
-            color: white;
-            border-radius: 24px 24px 0 0;
-            border-bottom: none;
-            padding: 24px;
-        }
-        .modal-body {
-            padding: 32px;
-        }
-        .form-label {
-            font-weight: 600;
-            color: #2b3674;
-            font-size: 14px;
-        }
-        .form-control, .form-select {
-            border-radius: 12px;
-            border: 1px solid #e9edf7;
-            padding: 10px 16px;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: #4318FF;
-            box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1);
-        }
-        .th-sort-icon {
-            margin-left: 6px;
-            font-size: 12px;
-            color: #c7d2e9;
-        }
-        .page-link {
-            color: #2b3674;
-            border: none;
-            margin: 0 3px;
-            border-radius: 8px !important;
-            font-weight: 600;
-            background: #f4f7fe;
-        }
-        .page-link:hover {
-            background: #e9edf7;
-            color: #4318FF;
-        }
-        .page-item.active .page-link {
-            background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%);
-            color: white;
-            box-shadow: 0 4px 10px rgba(67, 24, 255, 0.2);
-        }
-        .page-item.disabled .page-link {
-            color: #a3bed1;
-            background: transparent;
-        }
+        .action-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+        .modal-content { border-radius: 24px; border: none; }
+        .modal-header { background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%); color: white; border-radius: 24px 24px 0 0; border-bottom: none; padding: 24px; }
+        .modal-body { padding: 32px; }
+        .form-label { font-weight: 600; color: #2b3674; font-size: 14px; }
+        .form-control, .form-select { border-radius: 12px; border: 1px solid #e9edf7; padding: 10px 16px; }
+        .form-control:focus, .form-select:focus { border-color: #4318FF; box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1); }
+        .th-sort-icon { margin-left: 6px; font-size: 12px; color: #c7d2e9; }
+        .loader-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { width: 50px; height: 50px; border: 4px solid #f4f7fe; border-top: 4px solid #4318FF; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .d-none { display: none !important; }
+        .page-link { color: #2b3674; border: none; margin: 0 3px; border-radius: 8px !important; font-weight: 600; background: #f4f7fe; }
+        .page-link:hover { background: #e9edf7; color: #4318FF; }
+        .page-item.active .page-link { background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%); color: white; box-shadow: 0 4px 10px rgba(67, 24, 255, 0.2); }
+        .page-item.disabled .page-link { color: #a3bed1; background: transparent; }
     </style>
 </head>
 <body>
+
+<div id="mainLoader" class="loader-wrapper">
+    <div class="spinner"></div>
+    <div class="mt-3 fw-bold text-primary">กำลังโหลดข้อมูล...</div>
+</div>
 
 <div class="container-fluid py-3">
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
@@ -302,7 +164,7 @@
                     
                     <div class="text-end mt-5">
                         <button type="button" class="btn btn-light px-4 me-2 border" style="border-radius: 12px; font-weight: 600;" data-bs-dismiss="modal">ยกเลิก</button>
-                        <button type="submit" id="saveButton" class="btn-primary-gradient px-5">บันทึกข้อมูล</button>
+                        <button type="submit" class="btn-primary-gradient px-5">บันทึกข้อมูล</button>
                     </div>
                 </form>
             </div>
@@ -310,7 +172,6 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynbOaqhL6JfelhsCRrP1glBS5d834u8Mq8eoIPdJe31rZextKEEFc3-jWdEcKUmN6IGA/exec';
     
@@ -320,11 +181,10 @@
     let sortAsc = true;
     let currentPage = 1;
     let pageSize = 50;
-    let userIP = "Unknown"; // ตัวแปรเก็บ IP
+    let userIP = "Unknown"; 
 
     const dataModal = new bootstrap.Modal(document.getElementById('dataModal'));
 
-    // แอบดึง IP ผู้ใช้เพื่อส่งไปเก็บ Log
     async function fetchUserIP() {
         try {
             const response = await fetch('https://api.ipify.org?format=json');
@@ -425,7 +285,6 @@
             `;
             tbody.appendChild(tr);
         });
-        
         renderPagination(filteredData.length);
     }
 
@@ -494,9 +353,24 @@
 
     document.getElementById('dataForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const saveBtn = document.getElementById('saveButton');
-        saveBtn.disabled = true;
         
+        // 🔒 Popup ขอรหัสผ่านก่อนบันทึก
+        const { value: pin } = await Swal.fire({
+            title: 'ยืนยันตัวตน',
+            text: 'กรุณากรอกรหัสผ่านเพื่อบันทึกข้อมูล',
+            input: 'password',
+            inputPlaceholder: 'ใส่รหัสผ่าน 4 หลัก',
+            showCancelButton: true,
+            confirmButtonColor: '#4318FF',
+            confirmButtonText: 'บันทึก',
+            cancelButtonText: 'ยกเลิก',
+            inputValidator: (value) => {
+                if (!value) return 'คุณยังไม่ได้กรอกรหัสผ่าน!';
+            }
+        });
+
+        if (!pin) return; // ถ้ายกเลิก
+
         Swal.fire({
             title: 'กำลังบันทึกข้อมูล...',
             allowOutsideClick: false,
@@ -512,18 +386,23 @@
             billDate: document.getElementById('billDate').value,
             submitDate: document.getElementById('submitDate').value,
             details: document.getElementById('details').value,
-            ip: userIP // ส่ง IP ไปพร้อม Payload
+            ip: userIP,
+            pin: pin // ส่งรหัสผ่านไปเช็คหลังบ้าน
         };
 
         try {
-            await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
-            dataModal.hide();
-            Swal.fire({ icon: 'success', title: 'สำเร็จ', text: 'บันทึกข้อมูลเรียบร้อยแล้ว', timer: 1500, showConfirmButton: false });
-            await loadData();
+            const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+            const result = await response.json();
+            
+            if(result.error) {
+                Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: result.error });
+            } else {
+                dataModal.hide();
+                Swal.fire({ icon: 'success', title: 'สำเร็จ', text: 'บันทึกข้อมูลเรียบร้อยแล้ว', timer: 1500, showConfirmButton: false });
+                await loadData();
+            }
         } catch (error) {
-            Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: 'บันทึกข้อมูลไม่สำเร็จ' });
-        } finally {
-            saveBtn.disabled = false;
+            Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: 'ไม่สามารถติดต่อเซิร์ฟเวอร์ได้' });
         }
     });
 
@@ -536,7 +415,6 @@
         });
 
         try {
-            // ส่ง IP ไปบันทึก Log ตอนปริ้นด้วย
             const response = await fetch(`${SCRIPT_URL}?action=print&invoice=${invoiceNo}&ip=${encodeURIComponent(userIP)}`);
             const result = await response.json();
             
@@ -560,17 +438,24 @@
     }
 
     function deleteRow(rowNum, invoiceNo) {
+        // 🔒 Popup ขอรหัสผ่านก่อนลบ
         Swal.fire({
             title: 'ยืนยันการลบ?',
-            text: "คุณต้องการลบข้อมูลรายการนี้แบบถาวรใช่หรือไม่?",
+            text: "กรุณากรอกรหัสผ่านเพื่อยืนยันการลบข้อมูลนี้!",
+            input: 'password',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#ee5d50',
             cancelButtonColor: '#a3bed1',
             confirmButtonText: 'ใช่, ลบเลย!',
-            cancelButtonText: 'ยกเลิก'
+            cancelButtonText: 'ยกเลิก',
+            inputValidator: (value) => {
+                if (!value) return 'คุณยังไม่ได้กรอกรหัสผ่าน!';
+            }
         }).then(async (result) => {
             if (result.isConfirmed) {
+                const pin = result.value;
+                
                 Swal.fire({
                     title: 'กำลังลบข้อมูล...',
                     allowOutsideClick: false,
@@ -578,18 +463,22 @@
                 });
                 
                 try {
-                    // ส่ง IP ไปบันทึก Log ตอนลบด้วย
-                    await fetch(`${SCRIPT_URL}?action=delete&row=${rowNum}&invoice=${invoiceNo}&ip=${encodeURIComponent(userIP)}`);
-                    Swal.fire({ icon: 'success', title: 'ลบสำเร็จ', showConfirmButton: false, timer: 1500 });
-                    await loadData();
+                    const response = await fetch(`${SCRIPT_URL}?action=delete&row=${rowNum}&invoice=${invoiceNo}&ip=${encodeURIComponent(userIP)}&pin=${pin}`);
+                    const resData = await response.json();
+                    
+                    if (resData.error) {
+                        Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: resData.error });
+                    } else {
+                        Swal.fire({ icon: 'success', title: 'ลบสำเร็จ', showConfirmButton: false, timer: 1500 });
+                        await loadData();
+                    }
                 } catch (error) {
-                    Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: 'ลบข้อมูลไม่สำเร็จ' });
+                    Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: 'ไม่สามารถติดต่อเซิร์ฟเวอร์ได้' });
                 }
             }
         });
     }
 
-    // ดึง IP แล้วค่อยโหลดข้อมูลตาราง
     window.onload = async () => {
         await fetchUserIP();
         loadData();
