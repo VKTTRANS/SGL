@@ -6,7 +6,8 @@
     <title>SGL Master List</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
         body {
             font-family: 'Prompt', sans-serif;
@@ -52,7 +53,7 @@
             width: 100%;
             max-width: 350px;
         }
-        .search-container i {
+        .search-container svg {
             position: absolute;
             left: 16px;
             top: 50%;
@@ -168,31 +169,6 @@
             font-size: 12px;
             color: #c7d2e9;
         }
-        .loader-wrapper {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(5px);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #f4f7fe;
-            border-top: 4px solid #4318FF;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .d-none { display: none !important; }
-        
         .page-link {
             color: #2b3674;
             border: none;
@@ -218,11 +194,6 @@
 </head>
 <body>
 
-<div id="mainLoader" class="loader-wrapper">
-    <div class="spinner"></div>
-    <div class="mt-3 fw-bold text-primary">กำลังโหลดข้อมูล...</div>
-</div>
-
 <div class="container-fluid py-3">
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
         <div class="d-flex align-items-center gap-3">
@@ -240,7 +211,7 @@
     <div class="card-custom">
         <div class="d-flex justify-content-end mb-4">
             <div class="search-container">
-                <i class="fa-solid fa-search"></i>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 <input type="text" id="searchInput" class="form-control-search" placeholder="ค้นหาข้อมูลใดๆ ในตาราง...">
             </div>
         </div>
@@ -249,13 +220,13 @@
             <table class="table table-hover align-middle">
                 <thead>
                     <tr>
-                        <th onclick="sortTable('timestamp')">วันที่สร้าง <i class="fa-solid fa-sort th-sort-icon" id="sort-timestamp"></i></th>
-                        <th onclick="sortTable('bookingNo')">Booking No. <i class="fa-solid fa-sort th-sort-icon" id="sort-bookingNo"></i></th>
-                        <th onclick="sortTable('invoiceNo')">Invoice / Receipt <i class="fa-solid fa-sort th-sort-icon" id="sort-invoiceNo"></i></th>
-                        <th onclick="sortTable('amount')">ยอดเงิน (THB) <i class="fa-solid fa-sort th-sort-icon" id="sort-amount"></i></th>
-                        <th onclick="sortTable('billDate')">วันที่ออกบิล <i class="fa-solid fa-sort th-sort-icon" id="sort-billDate"></i></th>
-                        <th onclick="sortTable('submitDate')">วันที่ส่งเอกสาร <i class="fa-solid fa-sort th-sort-icon" id="sort-submitDate"></i></th>
-                        <th onclick="sortTable('details')">หมายเหตุ / รายละเอียด <i class="fa-solid fa-sort th-sort-icon" id="sort-details"></i></th>
+                        <th onclick="sortTable('timestamp')">วันที่สร้าง <span class="th-sort-icon" id="sort-timestamp">▼</span></th>
+                        <th onclick="sortTable('bookingNo')">Booking No. <span class="th-sort-icon" id="sort-bookingNo">▼</span></th>
+                        <th onclick="sortTable('invoiceNo')">Invoice / Receipt <span class="th-sort-icon" id="sort-invoiceNo">▼</span></th>
+                        <th onclick="sortTable('amount')">ยอดเงิน (THB) <span class="th-sort-icon" id="sort-amount">▼</span></th>
+                        <th onclick="sortTable('billDate')">วันที่ออกบิล <span class="th-sort-icon" id="sort-billDate">▼</span></th>
+                        <th onclick="sortTable('submitDate')">วันที่ส่งเอกสาร <span class="th-sort-icon" id="sort-submitDate">▼</span></th>
+                        <th onclick="sortTable('details')">หมายเหตุ / รายละเอียด <span class="th-sort-icon" id="sort-details">▼</span></th>
                         <th class="text-center" style="width: 180px; min-width: 150px;">จัดการ</th>
                     </tr>
                 </thead>
@@ -339,16 +310,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content text-center p-4" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);">
-            <div class="spinner mx-auto mb-3"></div>
-            <div class="fw-bold" style="color: #2b3674; font-size: 16px;">กำลังประมวลผล PDF...</div>
-            <div class="text-muted small mt-1">กรุณารอสักครู่</div>
-        </div>
-    </div>
-</div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynbOaqhL6JfelhsCRrP1glBS5d834u8Mq8eoIPdJe31rZextKEEFc3-jWdEcKUmN6IGA/exec';
@@ -359,25 +320,40 @@
     let sortAsc = true;
     let currentPage = 1;
     let pageSize = 50;
+    let userIP = "Unknown"; // ตัวแปรเก็บ IP
 
     const dataModal = new bootstrap.Modal(document.getElementById('dataModal'));
-    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+
+    // แอบดึง IP ผู้ใช้เพื่อส่งไปเก็บ Log
+    async function fetchUserIP() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            userIP = data.ip;
+        } catch (error) {
+            userIP = "Unknown";
+        }
+    }
 
     async function loadData() {
-        document.getElementById('mainLoader').classList.remove('d-none');
+        Swal.fire({
+            title: 'กำลังโหลดข้อมูล...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+        
         try {
             const response = await fetch(`${SCRIPT_URL}?action=getData`);
             allData = await response.json();
             applyFilters();
+            Swal.close();
         } catch (error) {
-            document.getElementById('dataTable').innerHTML = '<tr><td colspan="8" class="text-center text-danger py-4">ไม่สามารถเชื่อมต่อฐานข้อมูลได้</td></tr>';
+            Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถเชื่อมต่อฐานข้อมูลได้' });
         }
-        document.getElementById('mainLoader').classList.add('d-none');
     }
 
     function applyFilters() {
         const keyword = document.getElementById('searchInput').value.toLowerCase();
-        
         filteredData = allData.filter(item => {
             return (
                 String(item.timestamp).toLowerCase().includes(keyword) ||
@@ -403,7 +379,6 @@
                 return sortAsc ? String(valA).localeCompare(String(valB), 'th') : String(valB).localeCompare(String(valA), 'th');
             });
         }
-        
         currentPage = 1;
         renderTable();
     }
@@ -443,7 +418,7 @@
                     <button class="action-btn btn-edit me-1" onclick='openEditModal(${itemData})'>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg>
                     </button>
-                    <button class="action-btn btn-delete" onclick='deleteRow(${item.row})'>
+                    <button class="action-btn btn-delete" onclick='deleteRow(${item.row}, "${item.invoiceNo}")'>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     </button>
                 </td>
@@ -491,9 +466,9 @@
             sortAsc = true;
             currentSortCol = column;
         }
-        document.querySelectorAll('.th-sort-icon').forEach(icon => icon.className = 'fa-solid fa-sort th-sort-icon');
+        document.querySelectorAll('.th-sort-icon').forEach(icon => icon.innerText = '▼');
         const activeIcon = document.getElementById(`sort-${column}`);
-        if (activeIcon) activeIcon.className = sortAsc ? 'fa-solid fa-sort-up th-sort-icon text-primary' : 'fa-solid fa-sort-down th-sort-icon text-primary';
+        if (activeIcon) activeIcon.innerText = sortAsc ? '▲' : '▼';
         applyFilters();
     }
 
@@ -521,7 +496,12 @@
         e.preventDefault();
         const saveBtn = document.getElementById('saveButton');
         saveBtn.disabled = true;
-        saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>กำลังบันทึก...';
+        
+        Swal.fire({
+            title: 'กำลังบันทึกข้อมูล...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
         
         const payload = {
             action: document.getElementById('actionType').value,
@@ -531,63 +511,89 @@
             amount: parseFloat(document.getElementById('amount').value),
             billDate: document.getElementById('billDate').value,
             submitDate: document.getElementById('submitDate').value,
-            details: document.getElementById('details').value
+            details: document.getElementById('details').value,
+            ip: userIP // ส่ง IP ไปพร้อม Payload
         };
 
         try {
             await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
             dataModal.hide();
+            Swal.fire({ icon: 'success', title: 'สำเร็จ', text: 'บันทึกข้อมูลเรียบร้อยแล้ว', timer: 1500, showConfirmButton: false });
             await loadData();
         } catch (error) {
-            alert('บันทึกข้อมูลไม่สำเร็จ');
+            Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: 'บันทึกข้อมูลไม่สำเร็จ' });
         } finally {
             saveBtn.disabled = false;
-            saveBtn.innerText = 'บันทึกข้อมูล';
         }
     });
 
     async function printDoc(invoiceNo) {
-        loadingModal.show();
+        Swal.fire({
+            title: 'กำลังประมวลผล PDF...',
+            text: 'ระบบกำลังดึงไฟล์ อาจใช้เวลาสักครู่',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
         try {
-            const response = await fetch(`${SCRIPT_URL}?action=print&invoice=${invoiceNo}`);
+            // ส่ง IP ไปบันทึก Log ตอนปริ้นด้วย
+            const response = await fetch(`${SCRIPT_URL}?action=print&invoice=${invoiceNo}&ip=${encodeURIComponent(userIP)}`);
             const result = await response.json();
-            loadingModal.hide();
             
             if (result.error) {
-                alert('แจ้งเตือน: ' + result.error);
+                Swal.fire({ icon: 'error', title: 'แจ้งเตือน', text: result.error });
                 return;
             }
             
             if (result.url) {
-                // บังคับให้เบราว์เซอร์ดาวน์โหลดไฟล์จาก Direct Download Link
+                Swal.close();
                 const link = document.createElement('a');
                 link.href = result.url;
-                // ในบางเบราว์เซอร์ การระบุ attribute download จะช่วยคอนเฟิร์มชื่อไฟล์
                 link.setAttribute('download', ''); 
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
             }
         } catch (error) {
-            loadingModal.hide();
-            alert('ระบบขัดข้อง: ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์เพื่อพิมพ์ PDF ได้');
+            Swal.fire({ icon: 'error', title: 'ระบบขัดข้อง', text: 'ไม่สามารถดาวน์โหลดไฟล์ PDF ได้' });
         }
     }
 
-    async function deleteRow(rowNum) {
-        if(confirm('ยืนยันการลบข้อมูลรายการนี้?')) {
-            document.getElementById('mainLoader').classList.remove('d-none');
-            try {
-                await fetch(`${SCRIPT_URL}?action=delete&row=${rowNum}`);
-                await loadData();
-            } catch (error) {
-                alert('ลบข้อมูลไม่สำเร็จ');
-                document.getElementById('mainLoader').classList.add('d-none');
+    function deleteRow(rowNum, invoiceNo) {
+        Swal.fire({
+            title: 'ยืนยันการลบ?',
+            text: "คุณต้องการลบข้อมูลรายการนี้แบบถาวรใช่หรือไม่?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ee5d50',
+            cancelButtonColor: '#a3bed1',
+            confirmButtonText: 'ใช่, ลบเลย!',
+            cancelButtonText: 'ยกเลิก'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'กำลังลบข้อมูล...',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); }
+                });
+                
+                try {
+                    // ส่ง IP ไปบันทึก Log ตอนลบด้วย
+                    await fetch(`${SCRIPT_URL}?action=delete&row=${rowNum}&invoice=${invoiceNo}&ip=${encodeURIComponent(userIP)}`);
+                    Swal.fire({ icon: 'success', title: 'ลบสำเร็จ', showConfirmButton: false, timer: 1500 });
+                    await loadData();
+                } catch (error) {
+                    Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: 'ลบข้อมูลไม่สำเร็จ' });
+                }
             }
-        }
+        });
     }
 
-    window.onload = loadData;
+    // ดึง IP แล้วค่อยโหลดข้อมูลตาราง
+    window.onload = async () => {
+        await fetchUserIP();
+        loadData();
+    };
 </script>
 </body>
 </html>
