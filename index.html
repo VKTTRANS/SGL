@@ -16,7 +16,7 @@
             padding: 20px;
         }
         .container-fluid {
-            max-width: 95%; /* ปรับความกว้างเป็น 95% ของหน้าจอ */
+            max-width: 95%;
         }
         .header-title {
             font-weight: 700;
@@ -558,30 +558,15 @@
                 return;
             }
             
-            // กรณีโหลดและตั้งชื่อไฟล์ (Base64) สำเร็จ
-            if (result.base64) {
-                const byteCharacters = atob(result.base64);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                const byteArray = new Uint8Array(byteNumbers);
-                const blob = new Blob([byteArray], {type: 'application/pdf'});
+            if (result.url) {
+                // บังคับให้เบราว์เซอร์ดาวน์โหลดไฟล์จาก Direct Download Link
                 const link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                link.download = result.filename;
+                link.href = result.url;
+                // ในบางเบราว์เซอร์ การระบุ attribute download จะช่วยคอนเฟิร์มชื่อไฟล์
+                link.setAttribute('download', ''); 
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-            } 
-            // กรณีติดสิทธิ์/Permission จะเปิดลิ้งก์ในแท็บใหม่แทน
-            else if (result.url) {
-                const newWin = window.open(result.url, '_blank');
-                if(!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
-                    alert('กรุณาอนุญาต Pop-up (Allow pop-ups) ตรงมุมขวาบนของเบราว์เซอร์ เพื่อให้ระบบเปิดไฟล์ได้');
-                }
-            } else {
-                alert('เกิดข้อผิดพลาด: ไม่สามารถสร้างไฟล์ PDF ได้');
             }
         } catch (error) {
             loadingModal.hide();
