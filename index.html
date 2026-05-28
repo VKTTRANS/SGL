@@ -6,16 +6,18 @@
     <title>SGL Billing Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f4f6f9; }
-        .table-hover tbody tr:hover { background-color: #f1f1f1; cursor: pointer; }
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .table-hover tbody tr:hover { background-color: #f1f1f1; }
+        .card { border-radius: 12px; }
+        .table th { font-weight: 600; }
     </style>
 </head>
 <body>
 
 <div class="container-fluid py-4 px-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="m-0 fw-bold text-primary">📄 SGL Master List (Data)</h2>
-        <button class="btn btn-primary" onclick="openAddModal()">+ เพิ่มรายการใหม่</button>
+        <h2 class="m-0 fw-bold text-primary">📊 ระบบจัดการข้อมูล SGL Master List</h2>
+        <button class="btn btn-primary px-4 fw-bold" onclick="openAddModal()">+ เพิ่มรายการใหม่</button>
     </div>
 
     <div class="card shadow-sm border-0">
@@ -29,12 +31,12 @@
                             <th>ยอดเงิน (THB)</th>
                             <th>วันที่ออกบิล</th>
                             <th>วันที่ส่งเอกสาร</th>
-                            <th>รายละเอียด</th>
-                            <th class="text-center">จัดการ</th>
+                            <th>หมายเหตุ / รายละเอียด</th>
+                            <th class="text-center" style="width: 220px;">จัดการข้อมูล</th>
                         </tr>
                     </thead>
                     <tbody id="dataTable">
-                        <tr><td colspan="7" class="text-center py-4">กำลังโหลดข้อมูล...</td></tr>
+                        <tr><td colspan="7" class="text-center py-4">กำลังเชื่อมต่อฐานข้อมูล Google Sheets...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -42,14 +44,14 @@
     </div>
 </div>
 
-<div class="modal fade" id="dataModal" tabindex="-1">
+<div class="modal fade" id="dataModal" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+    <div class="modal-content border-0 shadow">
       <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="modalTitle">ฟอร์มข้อมูลเอกสาร</h5>
+        <h5 class="modal-title fw-bold" id="modalTitle">ฟอร์มข้อมูลเอกสาร</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body p-4">
         <form id="dataForm">
             <input type="hidden" id="actionType" value="add">
             <input type="hidden" id="editRow" value="">
@@ -57,37 +59,37 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">3.1 เลขที่ Booking</label>
-                    <input type="text" id="bookingNo" class="form-control" required>
+                    <input type="text" id="bookingNo" class="form-control" placeholder="กรอกเลขที่ Booking" required>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label class="form-label fw-bold">3.2 เลขที่ Invoice / Receipt</label>
-                    <input type="text" id="invoiceNo" class="form-control" required>
+                    <input type="text" id="invoiceNo" class="form-control" placeholder="กรอกเลขที่ Invoice / Receipt" required>
                 </div>
             </div>
             
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">3.3 จำนวนยอด (บาท)</label>
-                    <input type="number" step="0.01" id="amount" class="form-control" required>
+                    <label class="form-label fw-bold">3.3 จำนวนยอดเงิน (บาท)</label>
+                    <input type="number" step="0.01" id="amount" class="form-control" placeholder="0.00" required>
                 </div>
                 <div class="col-md-4 mb-3">
                     <label class="form-label fw-bold">3.4 วันที่ออกบิล</label>
                     <input type="date" id="billDate" class="form-control" required>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <label class="form-label fw-bold">3.5 วันที่ส่งเอกสาร</label>
+                    <label class="form-label fw-bold">3.5 วันที่ส่งเอกสาร (กรอกทีหลังได้)</label>
                     <input type="date" id="submitDate" class="form-control">
                 </div>
             </div>
 
             <div class="mb-3">
-                <label class="form-label fw-bold">3.6 รายละเอียดเพิ่มเติม</label>
-                <textarea id="details" class="form-control" rows="2"></textarea>
+                <label class="form-label fw-bold">3.6 รายละเอียดเพิ่มเติม / หมายเหตุ (แสดงเฉพาะหน้า Dashboard เท่านั้น)</label>
+                <textarea id="details" class="form-control" rows="3" placeholder="ระบุรายละเอียดเพิ่มเติมที่ต้องการให้แสดงบนหน้า List รายการ"></textarea>
             </div>
             
             <div class="text-end mt-4">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                <button type="submit" class="btn btn-success px-4">บันทึกข้อมูล</button>
+                <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">ยกเลิก</button>
+                <button type="submit" id="saveButton" class="btn btn-success px-4 fw-bold">บันทึกข้อมูล</button>
             </div>
         </form>
       </div>
@@ -97,13 +99,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // URL ของ Web App ที่ให้มา
+    // ดึง URL เว็บแอปพลิเคชันจากระบบของคุณมาใช้โดยตรง
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynbOaqhL6JfelhsCRrP1glBS5d834u8Mq8eoIPdJe31rZextKEEFc3-jWdEcKUmN6IGA/exec';
-    
-    // เก็บตัวแปร Modal
     const dataModal = new bootstrap.Modal(document.getElementById('dataModal'));
     
-    // โหลดข้อมูล
+    // ฟังก์ชันดึงรายการทั้งหมดมาแสดงที่หน้าจอหลัก
     async function loadData() {
         try {
             const response = await fetch(`${SCRIPT_URL}?action=getData`);
@@ -113,44 +113,43 @@
             tbody.innerHTML = '';
             
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">ไม่มีข้อมูล</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-4">ไม่มีข้อมูลในระบบในขณะนี้</td></tr>';
                 return;
             }
             
             data.forEach(item => {
-                // เก็บข้อมูลแบบ JSON ลงใน attribute เพื่อใช้อ้างอิงตอนแก้ไข
                 const itemData = JSON.stringify(item).replace(/'/g, "&#39;");
                 
                 let tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="ps-3 fw-bold">${item.bookingNo}</td>
-                    <td>${item.invoiceNo}</td>
-                    <td class="text-success fw-bold">${Number(item.amount).toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+                    <td class="ps-3 fw-bold text-secondary">${item.bookingNo}</td>
+                    <td class="fw-bold">${item.invoiceNo}</td>
+                    <td class="text-primary fw-bold">${Number(item.amount).toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                     <td>${item.billDate}</td>
-                    <td>${item.submitDate || '-'}</td>
-                    <td>${item.details || '-'}</td>
+                    <td>${item.submitDate || '<span class="text-muted">-</span>'}</td>
+                    <td class="text-wrap" style="max-width: 250px;">${item.details || '<span class="text-muted">-</span>'}</td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-dark me-1" onclick='printDoc("${item.invoiceNo}")'>Print</button>
-                        <button class="btn btn-sm btn-warning me-1" onclick='openEditModal(${itemData})'>แก้ไข</button>
-                        <button class="btn btn-sm btn-danger" onclick='deleteRow(${item.row})'>ลบ</button>
+                        <button class="btn btn-sm btn-dark px-2 fw-bold" onclick='printDoc("${item.invoiceNo}")'>Print</button>
+                        <button class="btn btn-sm btn-warning px-2 fw-bold text-white" onclick='openEditModal(${itemData})'>แก้ไข</button>
+                        <button class="btn btn-sm btn-danger px-2 fw-bold" onclick='deleteRow(${item.row})'>ลบ</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         } catch (error) {
-            document.getElementById('dataTable').innerHTML = '<tr><td colspan="7" class="text-center text-danger py-4">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
+            document.getElementById('dataTable').innerHTML = '<tr><td colspan="7" class="text-center text-danger py-4">ไม่สามารถเชื่อมต่อ API ของ Google Sheets ได้คราบ</td></tr>';
         }
     }
 
-    // เปิด Modal แบบ "เพิ่มข้อมูล"
+    // เปิดหน้าต่างเพื่อเพิ่มข้อมูลใหม่
     function openAddModal() {
         document.getElementById('dataForm').reset();
         document.getElementById('actionType').value = 'add';
-        document.getElementById('modalTitle').innerText = 'เพิ่มข้อมูลเอกสาร';
+        document.getElementById('modalTitle').innerText = '➕ เพิ่มรายการเอกสารใหม่';
         dataModal.show();
     }
 
-    // เปิด Modal แบบ "แก้ไขข้อมูล"
+    // เปิดหน้าต่างเพื่อแก้ไขข้อมูลเก่า
     function openEditModal(item) {
         document.getElementById('actionType').value = 'edit';
         document.getElementById('editRow').value = item.row;
@@ -162,17 +161,17 @@
         document.getElementById('submitDate').value = item.submitDate;
         document.getElementById('details').value = item.details;
         
-        document.getElementById('modalTitle').innerText = 'แก้ไขข้อมูล (Row: ' + item.row + ')';
+        document.getElementById('modalTitle').innerText = '✏️ แก้ไขข้อมูลเอกสาร (แถวที่: ' + item.row + ')';
         dataModal.show();
     }
 
-    // สั่งบันทึกข้อมูล (รับรองทั้ง Add และ Edit)
+    // กดปุ่มยืนยันส่งข้อมูล บันทึก/แก้ไข
     document.getElementById('dataForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        const submitBtn = e.target.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-        submitBtn.innerText = 'กำลังบันทึก...';
+        const saveBtn = document.getElementById('saveButton');
+        saveBtn.disabled = true;
+        saveBtn.innerText = 'กำลังบันทึกข้อมูล...';
         
         const payload = {
             action: document.getElementById('actionType').value,
@@ -186,7 +185,6 @@
         };
 
         try {
-            // ส่งข้อมูลเป็น text/plain เพื่อเลี่ยงปัญหา CORS
             await fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify(payload)
@@ -195,44 +193,43 @@
             dataModal.hide();
             await loadData();
         } catch (error) {
-            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            alert('ระบบขัดข้อง ไม่สามารถบันทึกข้อมูลได้ในขณะนี้');
         } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerText = 'บันทึกข้อมูล';
+            saveBtn.disabled = false;
+            saveBtn.innerText = 'บันทึกข้อมูล';
         }
     });
 
-    // ฟังก์ชันสั่ง Print
+    // ส่งสัญญาณไปฝั่งสคริปต์เพื่อกรอกฟอร์ม Template แล้วดึงกลับเป็นลิงก์ PDF
     async function printDoc(invoiceNo) {
-        alert('กำลังสร้างไฟล์ PDF... กรุณารอสักครู่');
+        alert('ระบบกำลังเตรียมจัดหน้าและคำนวณเงินสดภาษาไทยในหน้า Template กรุณารอสักครู่...');
         try {
             const response = await fetch(`${SCRIPT_URL}?action=print&invoice=${invoiceNo}`);
             const result = await response.json();
             
             if(result.url) {
-                // เด้งเปิดหน้า PDF
                 window.open(result.url, '_blank');
             } else {
-                alert('เกิดข้อผิดพลาด: ' + result.error);
+                alert('ข้อผิดพลาดจากระบบ: ' + result.error);
             }
         } catch (error) {
-            alert('ไม่สามารถสร้างเอกสารได้');
+            alert('ไม่สามารถเปิดไฟล์พิมพ์เนื่องจากข้อผิดพลาดของเครือข่าย');
         }
     }
 
-    // ฟังก์ชันลบข้อมูล
+    // สั่งลบข้อมูลทีละแถวออกหน้าระบบ
     async function deleteRow(rowNum) {
-        if(confirm('คุณต้องการลบข้อมูลบรรทัดนี้ใช่หรือไม่?')) {
+        if(confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการแถวที่ ' + rowNum + ' ออกจากระบบแบบถาวร?')) {
             try {
                 await fetch(`${SCRIPT_URL}?action=delete&row=${rowNum}`);
                 await loadData();
             } catch (error) {
-                alert('ลบข้อมูลไม่สำเร็จ');
+                alert('ลบข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
             }
         }
     }
 
-    // โหลดข้อมูลเมื่อเปิดหน้าเว็บ
+    // รันการแสดงผลทันทีเมื่อระบบหน้าเว็บโหลดเสร็จสิ้น
     loadData();
 </script>
 </body>
