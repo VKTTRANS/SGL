@@ -10,6 +10,8 @@
         .table-hover tbody tr:hover { background-color: #f1f1f1; }
         .card { border-radius: 12px; }
         .table th { font-weight: 600; }
+        /* แต่ง Popup Loading นิดหน่อย */
+        .loading-text { font-size: 1.1rem; font-weight: 500; margin-top: 15px; color: #333; }
     </style>
 </head>
 <body>
@@ -83,7 +85,7 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label fw-bold">3.6 รายละเอียดเพิ่มเติม / หมายเหตุ (แสดงเฉพาะหน้า Dashboard เท่านั้น)</label>
+                <label class="form-label fw-bold">3.6 รายละเอียดเพิ่มเติม / หมายเหตุ</label>
                 <textarea id="details" class="form-control" rows="3" placeholder="ระบุรายละเอียดเพิ่มเติมที่ต้องการให้แสดงบนหน้า List รายการ"></textarea>
             </div>
             
@@ -97,13 +99,28 @@
   </div>
 </div>
 
+<div class="modal fade" id="loadingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content border-0 shadow text-center p-4">
+        <div class="spinner-border text-primary mx-auto" style="width: 3rem; height: 3rem;" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <div class="loading-text">กำลังจัดเตรียมไฟล์ PDF...</div>
+        <div class="text-muted small mt-1">กรุณารอสักครู่ ระบบกำลังคำนวณ</div>
+      </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // ดึง URL เว็บแอปพลิเคชันจากระบบของคุณมาใช้โดยตรง
+    // URL ของคุณ
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynbOaqhL6JfelhsCRrP1glBS5d834u8Mq8eoIPdJe31rZextKEEFc3-jWdEcKUmN6IGA/exec';
-    const dataModal = new bootstrap.Modal(document.getElementById('dataModal'));
     
-    // ฟังก์ชันดึงรายการทั้งหมดมาแสดงที่หน้าจอหลัก
+    // ตั้งค่าตัวแปร Modal
+    const dataModal = new bootstrap.Modal(document.getElementById('dataModal'));
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    
+    // ดึงรายการทั้งหมด
     async function loadData() {
         try {
             const response = await fetch(`${SCRIPT_URL}?action=getData`);
@@ -137,11 +154,11 @@
                 tbody.appendChild(tr);
             });
         } catch (error) {
-            document.getElementById('dataTable').innerHTML = '<tr><td colspan="7" class="text-center text-danger py-4">ไม่สามารถเชื่อมต่อ API ของ Google Sheets ได้คราบ</td></tr>';
+            document.getElementById('dataTable').innerHTML = '<tr><td colspan="7" class="text-center text-danger py-4">ไม่สามารถเชื่อมต่อ API ของ Google Sheets ได้</td></tr>';
         }
     }
 
-    // เปิดหน้าต่างเพื่อเพิ่มข้อมูลใหม่
+    // เปิด Modal เพิ่มข้อมูล
     function openAddModal() {
         document.getElementById('dataForm').reset();
         document.getElementById('actionType').value = 'add';
@@ -149,7 +166,7 @@
         dataModal.show();
     }
 
-    // เปิดหน้าต่างเพื่อแก้ไขข้อมูลเก่า
+    // เปิด Modal แก้ไขข้อมูล
     function openEditModal(item) {
         document.getElementById('actionType').value = 'edit';
         document.getElementById('editRow').value = item.row;
@@ -165,7 +182,7 @@
         dataModal.show();
     }
 
-    // กดปุ่มยืนยันส่งข้อมูล บันทึก/แก้ไข
+    // บันทึก/แก้ไข ข้อมูล
     document.getElementById('dataForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -200,12 +217,17 @@
         }
     });
 
-    // ส่งสัญญาณไปฝั่งสคริปต์เพื่อกรอกฟอร์ม Template แล้วดึงกลับเป็นลิงก์ PDF
+    // สั่ง Print พร้อมโชว์ Loading Popup สวยๆ
     async function printDoc(invoiceNo) {
-        alert('ระบบกำลังเตรียมจัดหน้าและคำนวณเงินสดภาษาไทยในหน้า Template กรุณารอสักครู่...');
+        // โชว์ Loading Spinner
+        loadingModal.show();
+        
         try {
             const response = await fetch(`${SCRIPT_URL}?action=print&invoice=${invoiceNo}`);
             const result = await response.json();
+            
+            // ซ่อน Loading Spinner เมื่อได้รับลิงก์แล้ว
+            loadingModal.hide();
             
             if(result.url) {
                 window.open(result.url, '_blank');
@@ -213,23 +235,24 @@
                 alert('ข้อผิดพลาดจากระบบ: ' + result.error);
             }
         } catch (error) {
-            alert('ไม่สามารถเปิดไฟล์พิมพ์เนื่องจากข้อผิดพลาดของเครือข่าย');
+            loadingModal.hide();
+            alert('ไม่สามารถสร้างไฟล์ได้ กรุณาลองใหม่อีกครั้ง');
         }
     }
 
-    // สั่งลบข้อมูลทีละแถวออกหน้าระบบ
+    // ลบข้อมูล
     async function deleteRow(rowNum) {
         if(confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการแถวที่ ' + rowNum + ' ออกจากระบบแบบถาวร?')) {
             try {
                 await fetch(`${SCRIPT_URL}?action=delete&row=${rowNum}`);
                 await loadData();
             } catch (error) {
-                alert('ลบข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+                alert('ลบข้อมูลไม่สำเร็จ');
             }
         }
     }
 
-    // รันการแสดงผลทันทีเมื่อระบบหน้าเว็บโหลดเสร็จสิ้น
+    // โหลดข้อมูลเมื่อเปิดหน้า
     loadData();
 </script>
 </body>
