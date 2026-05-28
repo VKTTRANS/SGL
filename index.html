@@ -50,7 +50,7 @@
         .search-container {
             position: relative;
             width: 100%;
-            max-width: 400px;
+            max-width: 350px;
         }
         .search-container i {
             position: absolute;
@@ -63,8 +63,8 @@
             background: #f4f7fe;
             border: none;
             border-radius: 30px;
-            padding: 12px 20px 12px 45px;
-            font-size: 15px;
+            padding: 10px 20px 10px 45px;
+            font-size: 14px;
             width: 100%;
             transition: all 0.3s ease;
         }
@@ -151,12 +151,12 @@
             color: #2b3674;
             font-size: 14px;
         }
-        .form-control {
+        .form-control, .form-select {
             border-radius: 12px;
             border: 1px solid #e9edf7;
-            padding: 12px 16px;
+            padding: 10px 16px;
         }
-        .form-control:focus {
+        .form-control:focus, .form-select:focus {
             border-color: #4318FF;
             box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1);
         }
@@ -189,6 +189,29 @@
             100% { transform: rotate(360deg); }
         }
         .d-none { display: none !important; }
+        
+        /* Pagination Styling */
+        .page-link {
+            color: #2b3674;
+            border: none;
+            margin: 0 3px;
+            border-radius: 8px !important;
+            font-weight: 600;
+            background: #f4f7fe;
+        }
+        .page-link:hover {
+            background: #e9edf7;
+            color: #4318FF;
+        }
+        .page-item.active .page-link {
+            background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(67, 24, 255, 0.2);
+        }
+        .page-item.disabled .page-link {
+            color: #a3bed1;
+            background: transparent;
+        }
     </style>
 </head>
 <body>
@@ -212,13 +235,21 @@
     </div>
 
     <div class="card-custom">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <span style="font-size: 14px; font-weight: 500;">แสดง</span>
+                <select id="pageSize" class="form-select form-select-sm" style="width: 85px;">
+                    <option value="30">30</option>
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                    <option value="all">ทั้งหมด</option>
+                </select>
+                <span style="font-size: 14px; font-weight: 500;">รายการ</span>
+            </div>
+            
             <div class="search-container">
                 <i class="fa-solid fa-search"></i>
                 <input type="text" id="searchInput" class="form-control-search" placeholder="ค้นหาข้อมูลใดๆ ในตาราง...">
-            </div>
-            <div class="text-muted" style="font-size: 14px; font-weight: 500;">
-                พบ <span id="recordCount" class="text-primary fw-bold">0</span> รายการ
             </div>
         </div>
 
@@ -239,6 +270,16 @@
                 <tbody id="dataTable">
                 </tbody>
             </table>
+        </div>
+        
+        <div class="d-flex flex-wrap justify-content-between align-items-center mt-4">
+            <div class="text-muted" style="font-size: 14px; font-weight: 500;">
+                พบ <span id="recordCount" class="text-primary fw-bold">0</span> รายการ
+            </div>
+            <nav>
+                <ul class="pagination pagination-sm mb-0" id="paginationControls">
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -309,8 +350,11 @@
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynbOaqhL6JfelhsCRrP1glBS5d834u8Mq8eoIPdJe31rZextKEEFc3-jWdEcKUmN6IGA/exec';
     
     let allData = [];
+    let filteredData = [];
     let currentSortCol = '';
     let sortAsc = true;
+    let currentPage = 1;
+    let pageSize = 50;
 
     const dataModal = new bootstrap.Modal(document.getElementById('dataModal'));
     const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
@@ -319,26 +363,65 @@
         document.getElementById('mainLoader').classList.remove('d-none');
         try {
             const response = await fetch(`${SCRIPT_URL}?action=getData`);
-            const data = await response.json();
-            allData = data;
-            renderTable(allData);
+            allData = await response.json();
+            applyFilters();
         } catch (error) {
             document.getElementById('dataTable').innerHTML = '<tr><td colspan="8" class="text-center text-danger py-4">ไม่สามารถเชื่อมต่อฐานข้อมูลได้</td></tr>';
         }
         document.getElementById('mainLoader').classList.add('d-none');
     }
 
-    function renderTable(dataArray) {
+    function applyFilters() {
+        const keyword = document.getElementById('searchInput').value.toLowerCase();
+        
+        filteredData = allData.filter(item => {
+            return (
+                String(item.timestamp).toLowerCase().includes(keyword) ||
+                String(item.bookingNo).toLowerCase().includes(keyword) ||
+                String(item.invoiceNo).toLowerCase().includes(keyword) ||
+                String(item.amount).toLowerCase().includes(keyword) ||
+                String(item.billDate).toLowerCase().includes(keyword) ||
+                String(item.submitDate).toLowerCase().includes(keyword) ||
+                String(item.details).toLowerCase().includes(keyword)
+            );
+        });
+
+        if (currentSortCol) {
+            filteredData.sort((a, b) => {
+                let valA = a[currentSortCol] || '';
+                let valB = b[currentSortCol] || '';
+                if (currentSortCol === 'amount') return sortAsc ? valA - valB : valB - valA;
+                if (['billDate', 'submitDate', 'timestamp'].includes(currentSortCol)) {
+                    let dateA = new Date(valA).getTime() || 0;
+                    let dateB = new Date(valB).getTime() || 0;
+                    return sortAsc ? dateA - dateB : dateB - dateA;
+                }
+                return sortAsc ? String(valA).localeCompare(String(valB), 'th') : String(valB).localeCompare(String(valA), 'th');
+            });
+        }
+        
+        currentPage = 1;
+        renderTable();
+    }
+
+    function renderTable() {
         const tbody = document.getElementById('dataTable');
         tbody.innerHTML = '';
-        document.getElementById('recordCount').innerText = dataArray.length;
+        document.getElementById('recordCount').innerText = filteredData.length;
 
-        if (dataArray.length === 0) {
+        if (filteredData.length === 0) {
             tbody.innerHTML = '<tr><td colspan="8" class="text-center py-5 text-muted"><i class="fa-solid fa-folder-open fs-1 mb-3 d-block"></i>ไม่พบข้อมูล</td></tr>';
+            renderPagination(0);
             return;
         }
 
-        dataArray.forEach(item => {
+        let dataToRender = filteredData;
+        if (pageSize !== 'all') {
+            const start = (currentPage - 1) * pageSize;
+            dataToRender = filteredData.slice(start, start + pageSize);
+        }
+
+        dataToRender.forEach(item => {
             const itemData = JSON.stringify(item).replace(/'/g, "&#39;");
             let tr = document.createElement('tr');
             tr.innerHTML = `
@@ -357,22 +440,38 @@
             `;
             tbody.appendChild(tr);
         });
+        
+        renderPagination(filteredData.length);
     }
 
-    document.getElementById('searchInput').addEventListener('input', function(e) {
-        const keyword = e.target.value.toLowerCase();
-        const filteredData = allData.filter(item => {
-            return (
-                String(item.timestamp).toLowerCase().includes(keyword) ||
-                String(item.bookingNo).toLowerCase().includes(keyword) ||
-                String(item.invoiceNo).toLowerCase().includes(keyword) ||
-                String(item.amount).toLowerCase().includes(keyword) ||
-                String(item.billDate).toLowerCase().includes(keyword) ||
-                String(item.submitDate).toLowerCase().includes(keyword) ||
-                String(item.details).toLowerCase().includes(keyword)
-            );
-        });
-        renderTable(filteredData);
+    function renderPagination(totalItems) {
+        const ul = document.getElementById('paginationControls');
+        ul.innerHTML = '';
+        if (pageSize === 'all' || totalItems <= pageSize) return;
+
+        const totalPages = Math.ceil(totalItems / pageSize);
+
+        ul.innerHTML += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}"><a class="page-link" href="#" onclick="changePage(event, ${currentPage - 1})">«</a></li>`;
+        for(let i = 1; i <= totalPages; i++) {
+            ul.innerHTML += `<li class="page-item ${currentPage === i ? 'active' : ''}"><a class="page-link" href="#" onclick="changePage(event, ${i})">${i}</a></li>`;
+        }
+        ul.innerHTML += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}"><a class="page-link" href="#" onclick="changePage(event, ${currentPage + 1})">»</a></li>`;
+    }
+
+    function changePage(e, page) {
+        e.preventDefault();
+        const totalPages = Math.ceil(filteredData.length / pageSize);
+        if (page < 1 || page > totalPages) return;
+        currentPage = page;
+        renderTable();
+    }
+
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    
+    document.getElementById('pageSize').addEventListener('change', function(e) {
+        pageSize = e.target.value === 'all' ? 'all' : parseInt(e.target.value);
+        currentPage = 1;
+        renderTable();
     });
 
     function sortTable(column) {
@@ -382,44 +481,10 @@
             sortAsc = true;
             currentSortCol = column;
         }
-
-        document.querySelectorAll('.th-sort-icon').forEach(icon => {
-            icon.className = 'fa-solid fa-sort th-sort-icon';
-        });
-        
+        document.querySelectorAll('.th-sort-icon').forEach(icon => icon.className = 'fa-solid fa-sort th-sort-icon');
         const activeIcon = document.getElementById(`sort-${column}`);
-        if (activeIcon) {
-            activeIcon.className = sortAsc ? 'fa-solid fa-sort-up th-sort-icon text-primary' : 'fa-solid fa-sort-down th-sort-icon text-primary';
-        }
-
-        const sortedData = [...allData].sort((a, b) => {
-            let valA = a[column] || '';
-            let valB = b[column] || '';
-
-            if (column === 'amount') {
-                return sortAsc ? valA - valB : valB - valA;
-            }
-            if (column === 'billDate' || column === 'submitDate' || column === 'timestamp') {
-                let dateA = new Date(valA).getTime() || 0;
-                let dateB = new Date(valB).getTime() || 0;
-                return sortAsc ? dateA - dateB : dateB - dateA;
-            }
-            
-            return sortAsc 
-                ? String(valA).localeCompare(String(valB), 'th')
-                : String(valB).localeCompare(String(valA), 'th');
-        });
-
-        const currentKeyword = document.getElementById('searchInput').value.toLowerCase();
-        if(currentKeyword) {
-            const filteredData = sortedData.filter(item => {
-                return Object.values(item).some(val => String(val).toLowerCase().includes(currentKeyword));
-            });
-            renderTable(filteredData);
-        } else {
-            allData = sortedData;
-            renderTable(allData);
-        }
+        if (activeIcon) activeIcon.className = sortAsc ? 'fa-solid fa-sort-up th-sort-icon text-primary' : 'fa-solid fa-sort-down th-sort-icon text-primary';
+        applyFilters();
     }
 
     function openAddModal() {
@@ -436,16 +501,8 @@
         document.getElementById('invoiceNo').value = item.invoiceNo;
         document.getElementById('amount').value = item.amount;
         document.getElementById('billDate').value = item.billDate;
-        
-        let formattedSubmitDate = '';
-        if (item.submitDate && item.submitDate !== '-') {
-            formattedSubmitDate = item.submitDate;
-        }
-        document.getElementById('submitDate').value = formattedSubmitDate;
-        
-        let cleanDetails = item.details === '-' ? '' : item.details;
-        document.getElementById('details').value = cleanDetails;
-        
+        document.getElementById('submitDate').value = (item.submitDate && item.submitDate !== '-') ? item.submitDate : '';
+        document.getElementById('details').value = item.details === '-' ? '' : item.details;
         document.getElementById('modalTitle').innerText = 'แก้ไขข้อมูลเอกสาร';
         dataModal.show();
     }
@@ -471,9 +528,6 @@
             await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
             dataModal.hide();
             await loadData();
-            document.getElementById('searchInput').value = '';
-            document.querySelectorAll('.th-sort-icon').forEach(icon => icon.className = 'fa-solid fa-sort th-sort-icon');
-            currentSortCol = '';
         } catch (error) {
             alert('บันทึกข้อมูลไม่สำเร็จ');
         } finally {
@@ -490,7 +544,7 @@
             loadingModal.hide();
             
             if (result.error) {
-                alert('แจ้งเตือนระบบ: ' + result.error);
+                alert('แจ้งเตือน: ' + result.error);
                 return;
             }
             
@@ -504,21 +558,14 @@
                 const blob = new Blob([byteArray], {type: 'application/pdf'});
                 const link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
-                link.download = result.filename || (invoiceNo + ".pdf");
+                link.download = result.filename;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-            } else if (result.url) {
-                const newWin = window.open(result.url, '_blank');
-                if(!newWin || newWin.closed || typeof newWin.closed == 'undefined') {
-                    alert('กรุณาอนุญาต Pop-up (Allow pop-ups) ตรงมุมขวาบนของเบราว์เซอร์ เพื่อให้ระบบเปิดไฟล์ได้');
-                }
-            } else {
-                alert('เกิดข้อผิดพลาด: ไม่สามารถสร้างไฟล์ PDF ได้');
             }
         } catch (error) {
             loadingModal.hide();
-            alert('ระบบขัดข้อง: กรุณาลองใหม่อีกครั้ง');
+            alert('ระบบขัดข้อง: ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์เพื่อพิมพ์ PDF ได้');
         }
     }
 
