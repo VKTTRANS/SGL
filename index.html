@@ -121,7 +121,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="dataModal" tabindex="-1" data-bs-backdrop="static">
+<div class="modal fade" id="dataModal" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content shadow-lg">
             <div class="modal-header">
@@ -186,7 +186,6 @@
     
     let dataModalInstance = null;
 
-    // ระบบ Lazy Load ป้องกัน Error bootstrap is not defined
     function getModal() {
         if (!dataModalInstance) {
             dataModalInstance = new bootstrap.Modal(document.getElementById('dataModal'));
@@ -494,7 +493,6 @@
         });
     }
 
-    // เริ่มทำงานเมื่อหน้าเว็บโหลดเสร็จ
     window.onload = async () => {
         await fetchUserIP();
         loadData();
