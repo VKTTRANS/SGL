@@ -39,6 +39,10 @@
         .form-control, .form-select { border-radius: 12px; border: 1px solid #e9edf7; padding: 10px 16px; }
         .form-control:focus, .form-select:focus { border-color: #4318FF; box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1); }
         .th-sort-icon { margin-left: 6px; font-size: 12px; color: #c7d2e9; }
+        .loader-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { width: 50px; height: 50px; border: 4px solid #f4f7fe; border-top: 4px solid #4318FF; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .d-none { display: none !important; }
         .page-link { color: #2b3674; border: none; margin: 0 3px; border-radius: 8px !important; font-weight: 600; background: #f4f7fe; }
         .page-link:hover { background: #e9edf7; color: #4318FF; }
         .page-item.active .page-link { background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%); color: white; box-shadow: 0 4px 10px rgba(67, 24, 255, 0.2); }
@@ -46,6 +50,11 @@
     </style>
 </head>
 <body>
+
+<div id="mainLoader" class="loader-wrapper d-none">
+    <div class="spinner"></div>
+    <div class="mt-3 fw-bold text-primary">กำลังโหลดข้อมูล...</div>
+</div>
 
 <div class="container-fluid py-3">
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
@@ -155,7 +164,7 @@
                     
                     <div class="text-end mt-5">
                         <button type="button" class="btn btn-light px-4 me-2 border" style="border-radius: 12px; font-weight: 600;" data-bs-dismiss="modal">ยกเลิก</button>
-                        <button type="submit" class="btn-primary-gradient px-5">บันทึกข้อมูล</button>
+                        <button type="submit" id="saveButton" class="btn-primary-gradient px-5">บันทึกข้อมูล</button>
                     </div>
                 </form>
             </div>
@@ -163,6 +172,7 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynbOaqhL6JfelhsCRrP1glBS5d834u8Mq8eoIPdJe31rZextKEEFc3-jWdEcKUmN6IGA/exec';
     
@@ -173,10 +183,17 @@
     let currentPage = 1;
     let pageSize = 50;
     let userIP = "Unknown"; 
+    
+    let dataModalInstance = null;
 
-    const dataModal = new bootstrap.Modal(document.getElementById('dataModal'));
+    // ระบบ Lazy Load ป้องกัน Error bootstrap is not defined
+    function getModal() {
+        if (!dataModalInstance) {
+            dataModalInstance = new bootstrap.Modal(document.getElementById('dataModal'));
+        }
+        return dataModalInstance;
+    }
 
-    // ตั้ง Timeout ให้ดึง IP ข้ามไปถ้าโหลดนานเกิน 3 วินาที ป้องกันหน้าเว็บค้าง
     async function fetchUserIP() {
         try {
             const controller = new AbortController();
@@ -330,7 +347,7 @@
         document.getElementById('dataForm').reset();
         document.getElementById('actionType').value = 'add';
         document.getElementById('modalTitle').innerText = 'เพิ่มรายการเอกสารใหม่';
-        dataModal.show();
+        getModal().show();
     }
 
     function openEditModal(item) {
@@ -343,7 +360,7 @@
         document.getElementById('submitDate').value = (item.submitDate && item.submitDate !== '-') ? item.submitDate : '';
         document.getElementById('details').value = item.details === '-' ? '' : item.details;
         document.getElementById('modalTitle').innerText = 'แก้ไขข้อมูลเอกสาร';
-        dataModal.show();
+        getModal().show();
     }
 
     document.getElementById('dataForm').addEventListener('submit', async (e) => {
@@ -363,7 +380,10 @@
             }
         });
 
-        if (!pin) return; 
+        if (!pin) return;
+
+        const saveBtn = document.getElementById('saveButton');
+        saveBtn.disabled = true;
 
         Swal.fire({
             title: 'กำลังบันทึกข้อมูล...',
@@ -381,7 +401,7 @@
             submitDate: document.getElementById('submitDate').value,
             details: document.getElementById('details').value,
             ip: userIP,
-            pin: pin 
+            pin: pin
         };
 
         try {
@@ -391,19 +411,21 @@
             if(result.error) {
                 Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: result.error });
             } else {
-                dataModal.hide();
+                getModal().hide();
                 Swal.fire({ icon: 'success', title: 'สำเร็จ', text: 'บันทึกข้อมูลเรียบร้อยแล้ว', timer: 1500, showConfirmButton: false });
                 await loadData();
             }
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: 'ไม่สามารถติดต่อเซิร์ฟเวอร์ได้' });
+        } finally {
+            saveBtn.disabled = false;
         }
     });
 
     async function printDoc(invoiceNo) {
         Swal.fire({
             title: 'กำลังประมวลผล PDF...',
-            text: 'ระบบกำลังสร้างไฟล์ อาจใช้เวลาสักครู่',
+            text: 'ระบบกำลังดึงไฟล์ อาจใช้เวลาสักครู่',
             allowOutsideClick: false,
             didOpen: () => { Swal.showLoading(); }
         });
@@ -472,6 +494,7 @@
         });
     }
 
+    // เริ่มทำงานเมื่อหน้าเว็บโหลดเสร็จ
     window.onload = async () => {
         await fetchUserIP();
         loadData();
