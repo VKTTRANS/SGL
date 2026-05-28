@@ -10,7 +10,7 @@
     
     <style>
         body { font-family: 'Prompt', sans-serif; background-color: #f4f7fe; color: #2b3674; margin: 0; padding: 20px; }
-        .container-fluid { max-width: 98%; }
+        .container-fluid { max-width: 95%; }
         .header-title { font-weight: 700; color: #2b3674; font-size: 28px; letter-spacing: -0.5px; }
         .btn-primary-gradient { background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%); border: none; color: white; border-radius: 12px; padding: 10px 24px; font-weight: 500; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(67, 24, 255, 0.2); }
         .btn-primary-gradient:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(67, 24, 255, 0.3); color: white; }
@@ -22,9 +22,18 @@
         .table { margin-top: 10px; }
         .table thead th { border-bottom: 1px solid #e9edf7; color: #a3aed1; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; padding: 16px; cursor: pointer; transition: color 0.2s; white-space: nowrap; }
         .table thead th:hover { color: #4318FF; }
-        .table tbody td { border-bottom: 1px solid #f4f7fe; padding: 16px; vertical-align: middle; font-size: 14px; color: #2b3674; font-weight: 500; }
+        
+        /* แก้ไขสีพื้นหลัง td ให้โปร่งใสเพื่อโชว์สีแถว (tr) ที่เราสลับสี */
+        .table tbody td { border-bottom: 1px solid #f4f7fe; padding: 16px; vertical-align: middle; font-size: 14px; color: #2b3674; font-weight: 500; background-color: transparent !important; }
+        
+        /* สลับสีตารางแถวคู่/คี่ */
+        .table tbody tr:nth-child(odd) { background-color: #ffffff; }
+        .table tbody tr:nth-child(even) { background-color: #f8fafe; }
+        
+        /* ปรับสีตอน Hover */
         .table-hover tbody tr { transition: all 0.2s ease; }
-        .table-hover tbody tr:hover { background-color: #f8f9fc; transform: scale(1.002); box-shadow: 0 4px 10px rgba(0,0,0,0.02); border-radius: 12px; }
+        .table-hover tbody tr:hover { background-color: #edf1fa !important; transform: scale(1.002); box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-radius: 12px; }
+        
         .amount-text { color: #05cd99; font-weight: 700; }
         .timestamp-text { color: #8f9bba; font-size: 13px; font-weight: 400; }
         .action-btn { border-radius: 8px; padding: 6px 12px; font-size: 13px; font-weight: 600; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
@@ -493,6 +502,7 @@
         });
     }
 
+    // เริ่มทำงานเมื่อหน้าเว็บโหลดเสร็จ
     window.onload = async () => {
         await fetchUserIP();
         loadData();
