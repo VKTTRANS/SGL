@@ -9,70 +9,74 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
-        body { font-family: 'Prompt', sans-serif; background-color: #f4f7fe; color: #2b3674; margin: 0; padding: 0; height: 100vh; overflow: hidden; }
-        .container-fluid { max-width: 95%; height: 100vh; display: flex; flex-direction: column; padding-top: 15px; padding-bottom: 15px; }
+        body { font-family: 'Prompt', sans-serif; background-color: #f7f9fc; color: #344767; margin: 0; padding: 0; height: 100vh; overflow: hidden; }
+        .container-fluid { max-width: 96%; height: 100vh; display: flex; flex-direction: column; padding-top: 15px; padding-bottom: 15px; }
         .header-title { font-weight: 700; color: #2b3674; font-size: 22px; letter-spacing: -0.5px; }
-        .btn-primary-gradient { background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%); border: none; color: white; border-radius: 10px; padding: 8px 18px; font-size: 13px; font-weight: 500; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(67, 24, 255, 0.2); }
-        .btn-primary-gradient:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(67, 24, 255, 0.3); color: white; }
-        .card-custom { background: #ffffff; border-radius: 16px; border: none; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.03); padding: 16px 20px; margin-top: 10px; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .search-container { position: relative; width: 100%; max-width: 300px; }
-        .search-container svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #a3bed1; width: 14px; height: 14px; }
-        .form-control-search { background: #f4f7fe; border: none; border-radius: 30px; padding: 8px 16px 8px 36px; font-size: 13px; width: 100%; transition: all 0.3s ease; }
-        .form-control-search:focus { outline: none; box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1); background: #ffffff; }
         
-        /* การตั้งค่าตารางและ Sticky Header */
-        .table-responsive { flex: 1; overflow-y: auto; padding-right: 5px; }
-        .table { margin-bottom: 0; border-collapse: separate; border-spacing: 0; }
-        .table thead th { position: sticky; top: 0; z-index: 10; background-color: #ffffff; border-bottom: 2px solid #e9edf7; color: #a3aed1; font-size: 12px; font-weight: 600; text-transform: uppercase; padding: 12px 14px; cursor: pointer; white-space: nowrap; }
-        .table thead th:hover { color: #4318FF; }
-        .table tbody td { border-bottom: 1px solid #f4f7fe; padding: 12px 14px; vertical-align: middle; font-size: 13px; color: #2b3674; font-weight: 500; background-color: transparent !important; }
-        .table tbody tr:nth-child(odd) { background-color: #ffffff; }
-        .table tbody tr:nth-child(even) { background-color: #f8fafe; }
-        .table-hover tbody tr { transition: background-color 0.2s ease; }
-        .table-hover tbody tr:hover { background-color: #edf1fa !important; }
+        .btn-primary-gradient { background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%); border: none; color: white; border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 500; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(67, 24, 255, 0.15); }
+        .btn-primary-gradient:hover { transform: translateY(-1px); box-shadow: 0 6px 15px rgba(67, 24, 255, 0.25); color: white; }
         
-        .amount-text { color: #05cd99; font-weight: 700; }
-        .timestamp-text { color: #8f9bba; font-size: 12px; font-weight: 400; }
-        .action-btn { border-radius: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
-        .btn-print { background: #111c43; color: white; }
-        .btn-edit { background: #ffce20; color: #111c43; }
-        .btn-delete { background: #ee5d50; color: white; }
-        .action-btn:hover { transform: translateY(-1px); opacity: 0.9; }
-        .modal-content { border-radius: 20px; border: none; }
-        .modal-header { background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%); color: white; border-radius: 20px 20px 0 0; border-bottom: none; padding: 20px; }
+        .card-custom { background: #ffffff; border-radius: 12px; border: 1px solid #edf2f9; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); padding: 20px; margin-top: 10px; flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .filter-container { display: flex; gap: 10px; flex-wrap: wrap; }
+        .search-container { position: relative; width: 100%; max-width: 260px; }
+        .search-container svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #8392ab; width: 14px; height: 14px; }
+        
+        .form-control-custom { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 8px 16px; font-size: 13px; transition: all 0.2s; color: #495057; }
+        .form-control-custom:focus { outline: none; border-color: #868CFF; box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1); background: #ffffff; }
+        .form-control-search { padding-left: 36px; width: 100%; }
+        
+        .table-responsive { flex: 1; overflow-y: auto; margin-top: 10px; border-radius: 8px; border: 1px solid #edf2f9; }
+        .table { margin-bottom: 0; border-collapse: separate; border-spacing: 0; width: 100%; }
+        .table thead th { position: sticky; top: 0; z-index: 10; background-color: #f8f9fa; border-bottom: 1px solid #edf2f9; color: #8392ab; font-size: 12px; font-weight: 600; text-transform: uppercase; padding: 14px; cursor: pointer; white-space: nowrap; }
+        .table thead th:hover { color: #4318FF; background-color: #f1f3f7; }
+        .table tbody td { border-bottom: 1px solid #edf2f9; padding: 14px; vertical-align: middle; font-size: 13px; color: #344767; font-weight: 400; background-color: #ffffff; }
+        .table tbody tr:hover td { background-color: #f8f9fa; }
+        
+        .amount-text { color: #17c1e8; font-weight: 600; }
+        .timestamp-text { color: #adb5bd; font-size: 12px; }
+        
+        .action-btn { border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 500; border: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; background: #f8f9fa; border: 1px solid #edf2f9; color: #6c757d; }
+        .btn-print:hover { background: #111c43; color: white; border-color: #111c43; }
+        .btn-edit:hover { background: #fbcf33; color: #111c43; border-color: #fbcf33; }
+        .btn-delete:hover { background: #ea0606; color: white; border-color: #ea0606; }
+        
+        .modal-content { border-radius: 12px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .modal-header { background: #f8f9fa; border-bottom: 1px solid #edf2f9; padding: 20px 24px; border-radius: 12px 12px 0 0; }
+        .modal-title { color: #2b3674; font-weight: 700; font-size: 16px; }
         .modal-body { padding: 24px; }
-        .form-label { font-weight: 600; color: #2b3674; font-size: 13px; }
-        .form-control, .form-select { border-radius: 10px; border: 1px solid #e9edf7; padding: 8px 14px; font-size: 13px; }
-        .form-control:focus, .form-select:focus { border-color: #4318FF; box-shadow: 0 0 0 3px rgba(67, 24, 255, 0.1); }
-        .th-sort-icon { margin-left: 4px; font-size: 11px; color: #c7d2e9; }
-        .loader-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .spinner { width: 40px; height: 40px; border: 4px solid #f4f7fe; border-top: 4px solid #4318FF; border-radius: 50%; animation: spin 1s linear infinite; }
+        
+        .form-label { font-weight: 500; color: #344767; font-size: 13px; margin-bottom: 6px; }
+        .th-sort-icon { margin-left: 4px; font-size: 10px; color: #adb5bd; }
+        
+        .loader-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.85); backdrop-filter: blur(4px); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #4318FF; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .d-none { display: none !important; }
-        .page-link { color: #2b3674; border: none; margin: 0 2px; border-radius: 6px !important; font-size: 12px; font-weight: 600; background: #f4f7fe; padding: 5px 10px; }
-        .page-link:hover { background: #e9edf7; color: #4318FF; }
-        .page-item.active .page-link { background: linear-gradient(135deg, #4318FF 0%, #868CFF 100%); color: white; box-shadow: 0 4px 8px rgba(67, 24, 255, 0.2); }
-        .page-item.disabled .page-link { color: #a3bed1; background: transparent; }
         
-        /* ปรับแต่ง Scrollbar สวยๆ */
+        .page-link { color: #344767; border: 1px solid #edf2f9; margin: 0 2px; border-radius: 6px !important; font-size: 12px; font-weight: 500; background: #ffffff; padding: 6px 12px; }
+        .page-link:hover { background: #f8f9fa; color: #4318FF; border-color: #e9ecef; }
+        .page-item.active .page-link { background: #4318FF; border-color: #4318FF; color: white; }
+        .page-item.disabled .page-link { color: #adb5bd; background: #f8f9fa; }
+        
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #f4f7fe; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb { background: #c7d2e9; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a3bed1; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #dee2e6; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #adb5bd; }
     </style>
 </head>
 <body>
 
 <div id="mainLoader" class="loader-wrapper d-none">
     <div class="spinner"></div>
-    <div class="mt-3 fw-bold text-primary" style="font-size: 14px;">กำลังโหลดข้อมูล...</div>
+    <div class="mt-3 fw-bold" style="color: #4318FF; font-size: 14px;">กำลังโหลดข้อมูล...</div>
 </div>
 
 <div class="container-fluid">
     <div class="d-flex flex-wrap justify-content-between align-items-center flex-shrink-0">
         <div class="d-flex align-items-center gap-2">
-            <div style="background: linear-gradient(135deg, #4318FF, #868CFF); padding: 10px; border-radius: 12px;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+            <div style="background: linear-gradient(135deg, #4318FF, #868CFF); padding: 8px; border-radius: 8px; box-shadow: 0 2px 6px rgba(67, 24, 255, 0.2);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
             </div>
             <h2 class="header-title m-0">SGL Master List</h2>
         </div>
@@ -83,15 +87,37 @@
     </div>
 
     <div class="card-custom">
-        <div class="d-flex justify-content-end mb-3 flex-shrink-0">
+        <div class="d-flex justify-content-between flex-wrap mb-3 gap-2">
+            
+            <div class="filter-container">
+                <select id="filterYear" class="form-control-custom" style="width: 100px;">
+                    <option value="">ทุกปี</option>
+                </select>
+                <select id="filterMonth" class="form-control-custom" style="width: 130px;">
+                    <option value="">ทุกเดือน</option>
+                    <option value="01">มกราคม</option>
+                    <option value="02">กุมภาพันธ์</option>
+                    <option value="03">มีนาคม</option>
+                    <option value="04">เมษายน</option>
+                    <option value="05">พฤษภาคม</option>
+                    <option value="06">มิถุนายน</option>
+                    <option value="07">กรกฎาคม</option>
+                    <option value="08">สิงหาคม</option>
+                    <option value="09">กันยายน</option>
+                    <option value="10">ตุลาคม</option>
+                    <option value="11">พฤศจิกายน</option>
+                    <option value="12">ธันวาคม</option>
+                </select>
+            </div>
+
             <div class="search-container">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="searchInput" class="form-control-search" placeholder="ค้นหาข้อมูลใดๆ ในตาราง...">
+                <input type="text" id="searchInput" class="form-control-custom form-control-search" placeholder="ค้นหาข้อมูลใดๆ...">
             </div>
         </div>
 
         <div class="table-responsive">
-            <table class="table table-hover align-middle">
+            <table class="table align-middle">
                 <thead>
                     <tr>
                         <th onclick="sortTable('timestamp')">วันที่สร้าง <span class="th-sort-icon" id="sort-timestamp">▼</span></th>
@@ -101,7 +127,7 @@
                         <th onclick="sortTable('billDate')">วันที่ออกบิล <span class="th-sort-icon" id="sort-billDate">▼</span></th>
                         <th onclick="sortTable('submitDate')">วันที่ส่งเอกสาร <span class="th-sort-icon" id="sort-submitDate">▼</span></th>
                         <th onclick="sortTable('details')">หมายเหตุ / รายละเอียด <span class="th-sort-icon" id="sort-details">▼</span></th>
-                        <th class="text-center" style="width: 140px; min-width: 120px;">จัดการ</th>
+                        <th class="text-center" style="width: 140px; min-width: 130px;">จัดการ</th>
                     </tr>
                 </thead>
                 <tbody id="dataTable">
@@ -109,14 +135,14 @@
             </table>
         </div>
         
-        <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 flex-shrink-0 border-top pt-2">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mt-3 flex-shrink-0 pt-1">
             <div class="d-flex align-items-center gap-3">
-                <div class="text-muted" style="font-size: 12px; font-weight: 500;">
-                    พบ <span id="recordCount" class="text-primary fw-bold">0</span> รายการ
+                <div class="text-secondary" style="font-size: 12px; font-weight: 500;">
+                    พบ <span id="recordCount" class="fw-bold" style="color: #4318FF;">0</span> รายการ
                 </div>
                 <div class="d-flex align-items-center gap-2 border-start ps-3">
-                    <span style="font-size: 12px; font-weight: 500;">แสดง</span>
-                    <select id="pageSize" class="form-select form-select-sm" style="width: 75px; padding: 4px 10px; font-size: 12px;">
+                    <span style="font-size: 12px; font-weight: 500; color:#8392ab;">แสดง</span>
+                    <select id="pageSize" class="form-control-custom" style="padding: 4px 10px; font-size: 12px;">
                         <option value="30">30</option>
                         <option value="50" selected>50</option>
                         <option value="100">100</option>
@@ -134,10 +160,10 @@
 
 <div class="modal fade" id="dataModal" data-bs-backdrop="static" data-bs-focus="false">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content shadow-lg">
+        <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="modalTitle" style="font-size: 16px;">ฟอร์มข้อมูลเอกสาร</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="modalTitle">ฟอร์มข้อมูลเอกสาร</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <form id="dataForm">
@@ -147,34 +173,34 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">เลขที่ Booking</label>
-                            <input type="text" id="bookingNo" class="form-control" required>
+                            <input type="text" id="bookingNo" class="form-control-custom w-100" required>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">เลขที่ Invoice / Receipt</label>
-                            <input type="text" id="invoiceNo" class="form-control" required>
+                            <input type="text" id="invoiceNo" class="form-control-custom w-100" required>
                         </div>
                         
                         <div class="col-md-4">
                             <label class="form-label">จำนวนยอดเงิน (บาท)</label>
-                            <input type="number" step="0.01" id="amount" class="form-control" required>
+                            <input type="number" step="0.01" id="amount" class="form-control-custom w-100" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">วันที่ออกบิล</label>
-                            <input type="date" id="billDate" class="form-control" required>
+                            <input type="date" id="billDate" class="form-control-custom w-100" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">วันที่ส่งเอกสาร</label>
-                            <input type="date" id="submitDate" class="form-control">
+                            <input type="date" id="submitDate" class="form-control-custom w-100">
                         </div>
 
                         <div class="col-12">
                             <label class="form-label">รายละเอียดเพิ่มเติม / หมายเหตุ</label>
-                            <textarea id="details" class="form-control" rows="2"></textarea>
+                            <textarea id="details" class="form-control-custom w-100" rows="2"></textarea>
                         </div>
                     </div>
                     
-                    <div class="text-end mt-4">
-                        <button type="button" class="btn btn-light px-4 me-2 border" style="border-radius: 10px; font-weight: 600; font-size: 13px;" data-bs-dismiss="modal">ยกเลิก</button>
+                    <div class="text-end mt-4 pt-2 border-top">
+                        <button type="button" class="btn btn-light px-4 me-2" style="border-radius: 8px; font-weight: 500; font-size: 13px; border: 1px solid #edf2f9;" data-bs-dismiss="modal">ยกเลิก</button>
                         <button type="submit" id="saveButton" class="btn-primary-gradient px-4">บันทึกข้อมูล</button>
                     </div>
                 </form>
@@ -185,7 +211,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynbOaqhL6JfelhsCRrP1glBS5d834u8Mq8eoIPdJe31rZextKEEFc3-jWdEcKUmN6IGA/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbynbOaqhL6JfelhsCRrP1glBS5d834u8Mq8eoIPdJe31rZextKEEFc3-jWdEcKUmN6IGA/exec'; // ⚠️ อย่าลืมแก้ให้เป็นลิงก์ล่าสุด
     
     let allData = [];
     let filteredData = [];
@@ -227,6 +253,20 @@
         try {
             const response = await fetch(`${SCRIPT_URL}?action=getData`);
             allData = await response.json();
+            
+            // สร้างตัวเลือกปีให้อัตโนมัติจากข้อมูลบิล
+            const years = new Set();
+            allData.forEach(item => {
+                if(item.billDate && item.billDate !== '-') {
+                    years.add(item.billDate.split('-')[0]);
+                }
+            });
+            const yearSelect = document.getElementById('filterYear');
+            yearSelect.innerHTML = '<option value="">ทุกปี</option>';
+            [...years].sort((a,b) => b-a).forEach(year => {
+                yearSelect.innerHTML += `<option value="${year}">${year}</option>`;
+            });
+
             applyFilters();
             Swal.close();
         } catch (error) {
@@ -236,16 +276,26 @@
 
     function applyFilters() {
         const keyword = document.getElementById('searchInput').value.toLowerCase();
+        const selectedYear = document.getElementById('filterYear').value;
+        const selectedMonth = document.getElementById('filterMonth').value;
+
         filteredData = allData.filter(item => {
-            return (
+            const billDateStr = item.billDate || "";
+            
+            // เช็คตัวกรองปีและเดือน
+            const matchYear = selectedYear ? billDateStr.startsWith(selectedYear) : true;
+            const matchMonth = selectedMonth ? (billDateStr.split('-')[1] === selectedMonth) : true;
+            
+            // เช็คค้นหาข้อความ
+            const matchSearch = (
                 String(item.timestamp).toLowerCase().includes(keyword) ||
                 String(item.bookingNo).toLowerCase().includes(keyword) ||
                 String(item.invoiceNo).toLowerCase().includes(keyword) ||
                 String(item.amount).toLowerCase().includes(keyword) ||
-                String(item.billDate).toLowerCase().includes(keyword) ||
-                String(item.submitDate).toLowerCase().includes(keyword) ||
                 String(item.details).toLowerCase().includes(keyword)
             );
+
+            return matchYear && matchMonth && matchSearch;
         });
 
         if (currentSortCol) {
@@ -287,21 +337,21 @@
             let tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="timestamp-text">${item.timestamp}</td>
-                <td class="fw-bold">${item.bookingNo}</td>
-                <td class="fw-bold">${item.invoiceNo}</td>
+                <td class="fw-bold" style="color: #2b3674;">${item.bookingNo}</td>
+                <td class="fw-bold" style="color: #2b3674;">${item.invoiceNo}</td>
                 <td class="amount-text">${Number(item.amount).toLocaleString('th-TH', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                 <td>${item.billDate}</td>
                 <td>${item.submitDate}</td>
-                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.details}</td>
+                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.details}">${item.details}</td>
                 <td class="text-center text-nowrap">
-                    <button class="action-btn btn-print me-1" onclick='printDoc("${item.invoiceNo}")'>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                    <button class="action-btn btn-print me-1" onclick='printDoc("${item.invoiceNo}")' title="พิมพ์เอกสาร">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
                     </button>
-                    <button class="action-btn btn-edit me-1" onclick='openEditModal(${itemData})'>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg>
+                    <button class="action-btn btn-edit me-1" onclick='openEditModal(${itemData})' title="แก้ไข">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="16 3 21 8 8 21 3 21 3 16 16 3"></polygon></svg>
                     </button>
-                    <button class="action-btn btn-delete" onclick='deleteRow(${item.row}, "${item.invoiceNo}")'>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <button class="action-btn btn-delete" onclick='deleteRow(${item.row}, "${item.invoiceNo}")' title="ลบ">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     </button>
                 </td>
             `;
@@ -332,7 +382,10 @@
         renderTable();
     }
 
+    // Event Listeners สำหรับตัวกรองต่างๆ
     document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('filterYear').addEventListener('change', applyFilters);
+    document.getElementById('filterMonth').addEventListener('change', applyFilters);
     
     document.getElementById('pageSize').addEventListener('change', function(e) {
         pageSize = e.target.value === 'all' ? 'all' : parseInt(e.target.value);
@@ -415,7 +468,12 @@
         };
 
         try {
-            const response = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+            // เพิ่ม header content-type เพื่อกันปัญหา CORS
+            const response = await fetch(SCRIPT_URL, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload) 
+            });
             const result = await response.json();
             
             if(result.error) {
@@ -470,8 +528,8 @@
             input: 'password',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#ee5d50',
-            cancelButtonColor: '#a3bed1',
+            confirmButtonColor: '#ea0606',
+            cancelButtonColor: '#adb5bd',
             confirmButtonText: 'ใช่, ลบเลย!',
             cancelButtonText: 'ยกเลิก',
             inputValidator: (value) => {
